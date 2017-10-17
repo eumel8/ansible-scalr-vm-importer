@@ -1,0 +1,22 @@
+- name: create scalr json
+  template:
+    src: import-server.json.j2
+    dest: ~/.scalr/operate.json
+    mode: 0600
+    force: yes
+  when: farmroleid2|length != 0
+
+- name: check if server is already imported
+  shell: scalr-ctl servers list --filters cloudServerId={{ serverid }}
+  ignore_errors: true
+  register: currentserver
+  when: serverid|length != 0
+
+- name: set fact currentserverid
+  set_fact:
+    currentserverid: "{{ currentserver.stdout|from_json | json_query(\"data[].id\") }}"
+
+- name: import server
+  shell: scalr-ctl farm-roles import-server --farmRoleId {{ farmroleid2 }} --stdin < ~/.scalr/operate.json
+  ignore_errors: true
+  when: (farmroleid2|length != 0 and currentserverid|length == 0)

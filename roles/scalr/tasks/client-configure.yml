@@ -1,0 +1,25 @@
+- name: create conf directory openstack
+  file:
+    path: ~/.config/openstack
+    state: directory
+    mode: 0755
+
+- name: create conf directory scalr
+  file:
+    path: ~/.scalr
+    state: directory
+    mode: 0755
+
+- name: create os-client-config file
+  template:
+    src: cloud.yml.j2
+    dest: ~/.config/openstack/clouds.yml
+    mode: 0600
+  when: OPENSTACK_AUTH_URL is defined
+
+- name: create scalr default-config file
+  template:
+    src: default.yml.j2
+    dest: ~/.scalr/default.yaml
+    mode: 0600
+  when: SCALR_API_HOST is defined

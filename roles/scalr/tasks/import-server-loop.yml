@@ -1,0 +1,15 @@
+- name: get server list
+  shell: openstack --os-cloud default server list -f value -c ID -c Name --flavor {{ farmrolename }} | grep {{ SCALR_FARM_NAME }} | awk '{print $1}'
+  register: serverlist
+
+- name: set facts farmrolesname farmrolesid
+  set_fact:
+    farmrolename2: "{{ farmrolename }}"
+    farmroleid2: "{{ farmroleid }}"
+
+- name: loop over server
+  include_tasks: import-server-loop2.yml serverid={{ server_item }}
+  with_items: 
+    - "{{ serverlist.stdout_lines }}"
+  loop_control:
+    loop_var: server_item

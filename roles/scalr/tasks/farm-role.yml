@@ -1,0 +1,17 @@
+- name: get network name
+  shell: openstack --os-cloud default server list | grep {{ SCALR_FARM_NAME }} | awk '{print $8}'| awk -F= '{print $1}' | uniq
+  register: vmnetname
+  when: SCALR_FARM_NAME is defined
+
+- name: get network id
+  shell: openstack --os-cloud default network list -f value | grep {{ vmnetname.stdout }} | awk '{print $1}'
+  register: network
+
+- name: get flavor list
+  shell: openstack --os-cloud default flavor list -f value -c ID
+  register: flavors
+
+- name: loop over flavor
+  include_tasks: farm-role-loop.yml flavor={{ item }}
+  with_items: "{{ flavors.stdout_lines }}"
+  when: flavors is defined

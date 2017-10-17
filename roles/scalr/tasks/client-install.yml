@@ -1,0 +1,29 @@
+- name: install package python
+  apt:
+    name: python
+  become: true
+
+- name: install package openstack
+  apt:
+    name: python-openstackclient
+  become: true
+
+- name: install package pip
+  apt:
+    name: python-pip
+  become: true
+
+- name: install pip scalr
+  pip:
+    name: scalr-ctl
+  become: true
+
+- name: install pip ansible
+  pip:
+    name: ansible==2.3
+  become: true
+
+- name: install pip jmespath
+  pip:
+    name: jmespath
+  become: true

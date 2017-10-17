@@ -1,0 +1,21 @@
+---
+- import_tasks: client-install.yml
+  tags: installation
+
+- import_tasks: client-configure.yml
+  tags: installation
+
+- import_tasks: farm.yml
+  tags: farm
+
+- import_tasks: roles.yml
+  tags: role
+
+- import_tasks: image.yml
+  tags: image
+
+- import_tasks: farm-role.yml
+  tags: farm-role
+
+- import_tasks: import-server.yml
+  tags: import

@@ -1,0 +1,8 @@
+- name: get openstack images
+  shell: openstack --os-cloud default image list -f value --limit 1000  | grep Community_Ubuntu
+  register: imagelist
+
+- name: loop over flavor
+  include_tasks: image-loop.yml imageid={{ item.split(\' \')[0] }} imagename={{ item.split(\' \')[1] }}
+  with_items: "{{ imagelist.stdout_lines }}"
+  when: imagelist is defined

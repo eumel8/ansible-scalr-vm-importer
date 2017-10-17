@@ -1,0 +1,78 @@
+# part one: create category if not exists
+- name: list existing role categories
+  shell: scalr-ctl role-categories list
+  register: rolecategories
+
+- name: set fact SCALR_CATEGORY_ID
+  set_fact:
+    SCALR_CATEGORY_ID: "{{ rolecategories.stdout|from_json | json_query(\"data[?name=='\" + SCALR_CATEGORY_NAME + \"'].id|[0]\") }}"
+  when: SCALR_CATEGORY_NAME is defined
+
+- debug:
+    msg: "{{ SCALR_CATEGORY_ID }}"
+
+- name: create scalr json
+  template:
+    src: category.json.j2
+    dest: ~/.scalr/operate.json
+    mode: 0600
+    force: yes
+  when: SCALR_CATEGORY_ID|length == 0
+
+- name: create category
+  shell: scalr-ctl role-categories create --stdin < ~/.scalr/operate.json
+  register: rolecategories
+  when: SCALR_CATEGORY_ID|length == 0
+
+- name: list role categories
+  shell: scalr-ctl role-categories list
+  register: rolecategories
+  when: SCALR_CATEGORY_ID|length == 0
+
+- name: set fact SCALR_CATEGORY_ID (again)
+  set_fact:
+    SCALR_CATEGORY_ID: "{{ rolecategories.stdout|from_json | json_query(\"data[?name=='\" + SCALR_CATEGORY_NAME + \"'].id|[0]\") }}"
+  when: SCALR_CATEGORY_ID|length == 0
+
+- debug:
+    msg: "{{ SCALR_CATEGORY_ID }}"
+
+# part two: create role
+- name: list existing roles
+  shell: scalr-ctl roles list
+  register: roles
+
+- name: set fact SCALR_ROLE_ID
+  set_fact:
+    SCALR_ROLE_ID: "{{ roles.stdout|from_json | json_query(\"data[?name=='\" + SCALR_ROLE_NAME + \"'].id|[0]\") }}"
+  when: SCALR_ROLE_NAME is defined
+
+- debug:
+    msg: "{{ SCALR_ROLE_ID }}"
+
+- name: create scalr json
+  template:
+    src: role.json.j2
+    dest: ~/.scalr/operate.json
+    mode: 0600
+    force: yes
+  when: SCALR_ROLE_ID|length == 0
+
+- name: create role
+  shell: scalr-ctl roles create --stdin < ~/.scalr/operate.json
+  register: roles
+  when: SCALR_ROLE_ID|length == 0
+
+- name: list roles
+  shell: scalr-ctl roles list
+  register: roles
+  when: SCALR_ROLE_ID|length == 0
+
+- name: set fact SCALR_ROLE_ID (again)
+  set_fact:
+    SCALR_ROLE_ID: "{{ roles.stdout|from_json | json_query(\"data[?name=='\" + SCALR_ROLE_NAME + \"'].id|[0]\") }}"
+  when: SCALR_ROLE_ID|length == 0
+
+- debug:
+    msg: "{{ SCALR_ROLE_ID }}"
+

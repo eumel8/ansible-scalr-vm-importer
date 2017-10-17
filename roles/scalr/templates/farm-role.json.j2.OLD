@@ -1,0 +1,26 @@
+{
+   "alias": "{{ flavor | regex_replace('\.') }}",
+   "cloudLocation": "eu-de",
+
+  "networking": {
+    "hostname": {
+      "type": "TemplateHostnameConfiguration"
+    },
+    "networks": [{"id": "{{ network }}"}]
+  },
+  "scaling": {
+    "minInstances": 1,
+    "considerSuspendedServers": "running",
+    "scalingBehavior": "launch-terminate",
+    "enabled": false,
+    "maxInstances": 2
+  },
+   "instanceType": {
+     "id": "{{ flavor }}"
+   },
+   "role": {
+     "id": {{ SCALR_ROLE_ID }}
+   },
+   "cloudPlatform": "openstack"
+}
+#    "networks": [{{ network_list[1:] }}]

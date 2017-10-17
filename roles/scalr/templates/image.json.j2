@@ -1,0 +1,14 @@
+{
+   "size": 12,
+   "cloudImageId": "{{ imageid }}",
+   "deprecated": false,
+   "os": {
+     "id": "ubuntu-16-04"
+   },
+   "name": "{{ imagename | regex_replace('[\_|\.]', '-') }}",
+   "cloudLocation": "eu-de",
+   "architecture": "x86_64",
+   "cloudInitInstalled": true,
+   "cloudPlatform": "openstack",
+   "scalrAgentInstalled": false
+}

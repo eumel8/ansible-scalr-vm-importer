@@ -1,0 +1,5 @@
+- name: Scalr Automated Testing
+  connection: local
+  hosts: localhost
+  roles:
+  - role: scalr

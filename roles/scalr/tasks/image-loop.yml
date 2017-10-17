@@ -1,0 +1,16 @@
+- name: create scalr json
+  template:
+    src: image.json.j2
+    dest: ~/.scalr/operate.json
+    mode: 0600
+    force: yes
+  when: imageid|length != 0
+
+- name: register image
+  shell: scalr-ctl images register --stdin < ~/.scalr/operate.json
+  register: image
+  when: imageid|length != 0
+  ignore_errors: true
+
+#- debug:
+#    msg: "{{ image.stdout_lines }}"

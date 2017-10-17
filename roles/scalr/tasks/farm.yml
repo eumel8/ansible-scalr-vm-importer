@@ -1,0 +1,43 @@
+- name: list existing farm
+  shell: scalr-ctl farms list
+  register: farmlist
+
+- name: set fact SCALR_FARM_ID
+  set_fact:
+    SCALR_FARM_ID: "{{ farmlist.stdout|from_json | json_query(\"data[?name=='\" + SCALR_FARM_NAME + \"'].id|[0]\") }}"
+  when: SCALR_FARM_NAME is defined
+
+- name: create scalr json
+  template:
+    src: farm.json.j2
+    dest: ~/.scalr/operate.json
+    mode: 0600
+    force: yes
+  when: SCALR_FARM_ID|length == 0
+
+- name: create farm
+  shell: scalr-ctl farms create --stdin < ~/.scalr/operate.json
+  register: farm
+  when: 
+    - SCALR_FARM_ID|length == 0
+    - SCALR_PROJECT_ID is defined
+    - SCALR_FARM_NAME is defined
+
+- name: list farm
+  shell: scalr-ctl farms list
+  register: farmlist
+  when: SCALR_FARM_ID|length == 0
+
+- name: set fact SCALR_FARM_ID (again)
+  set_fact:
+    SCALR_FARM_ID: "{{ farmlist.stdout|from_json | json_query(\"data[?name=='\" + SCALR_FARM_NAME + \"'].id|[0]\") }}"
+  when: SCALR_FARM_ID|length == 0
+
+- name: launch farm
+  shell: scalr-ctl farms launch --farmId {{ SCALR_FARM_ID }}
+  register: launch
+  when: 
+    - SCALR_FARM_ID|length != 0
+
+- debug:
+    msg: "{{ SCALR_FARM_ID }}"

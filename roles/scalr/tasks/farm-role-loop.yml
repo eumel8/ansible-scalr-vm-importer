@@ -1,0 +1,18 @@
+- name: get SCALR_FARM_ID
+  include_tasks: get-farm-id.yml 
+  when: SCALR_FARM_ID|length == 0
+
+- name: create scalr json
+  template:
+    src: farm-role.json.j2
+    dest: ~/.scalr/operate.json
+    mode: 0600
+    force: yes
+  when: SCALR_FARM_ID|length != 0
+
+- name: create farm roles
+  shell: scalr-ctl farm-roles create --farmId {{ SCALR_FARM_ID }} --debug  --stdin < ~/.scalr/operate.json
+  register: farm_roles
+  when: SCALR_FARM_ID|length != 0
+  ignore_errors: true
+

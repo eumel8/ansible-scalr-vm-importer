@@ -1,0 +1,8 @@
+- name: list existing farm
+  shell: scalr-ctl farms list
+  register: farmlist
+
+- name: set fact SCALR_FARM_ID
+  set_fact:
+    SCALR_FARM_ID: "{{ farmlist.stdout|from_json | json_query(\"data[?name=='\" + SCALR_FARM_NAME + \"'].id|[0]\") }}"
+  when: SCALR_FARM_NAME is defined

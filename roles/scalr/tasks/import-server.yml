@@ -1,0 +1,19 @@
+- name: get SCALR_FARM_ID
+  include_tasks: get-farm-id.yml
+  when: SCALR_FARM_ID|length == 0
+
+- name: get farm-roles
+  shell: scalr-ctl farm-roles list --farmId {{ SCALR_FARM_ID }}
+  register: farmroles
+  when: SCALR_FARM_ID|length != 0
+
+- name: set facts farmrolesname farmrolesid
+  set_fact:
+    farmrolesnames: "{{ farmroles.stdout|from_json | json_query(\"data[].instanceType.id\") }}"
+    farmrolesids: "{{ farmroles.stdout|from_json | json_query(\"data[].id\") }}"
+
+- name: loop over farm roles
+  include_tasks: import-server-loop.yml farmrolename={{ item.0 }} farmroleid={{ item.1 }}
+  with_together: 
+    - "{{ farmrolesnames }}"
+    - "{{ farmrolesids }}"
