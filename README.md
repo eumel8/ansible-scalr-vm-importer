@@ -20,6 +20,7 @@ Requirements
 ------------
 
 Ansible 2.4+
+python-pip
 
 
 Workflows
