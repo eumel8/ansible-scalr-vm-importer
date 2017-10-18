@@ -8,11 +8,6 @@
     name: python-openstackclient
   become: true
 
-- name: install package pip
-  apt:
-    name: python-pip
-  become: true
-
 - name: install pip scalr
   pip:
     name: scalr-ctl
@@ -20,7 +15,7 @@
 
 - name: install pip ansible
   pip:
-    name: ansible==2.3
+    name: ansible==2.4
   become: true
 
 - name: install pip jmespath
