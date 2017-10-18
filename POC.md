@@ -39,3 +39,4 @@ ansible-playbook -e "SCALR_FARM_NAME=my-servers" scalr.yml --tags import
 
 check visibility in web UI
 
+WARNING: Farm termination kills the VMs!!!
